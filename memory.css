@@ -1,0 +1,16 @@
+body {
+    background-color: rgb(76, 80, 84);
+}
+
+#cardContainer {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 10px;
+    padding: 20px 20px;
+}
+
+.card {
+    background-color: rgb(255, 162, 128);
+    cursor: pointer;
+    height: 50px;
+  }

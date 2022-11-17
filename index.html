@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DEVREAL Memory Game</title>
+        <script src="memory.js"></script>
+        <link rel="stylesheet" href="memory.css">
+    </head>
+    <body>
+        <h1>Memory</h1>
+        <div id="cardContainer"></div>
+
+        <script type = "text/javascript">
+            const cardContainer = document.getElementById("cardContainer");
+            for (let i = 0; i < 12; i++) {
+                const card = document.createElement("div");
+                card.setAttribute("id", "card_" + i);
+                card.setAttribute("class", "card");
+                card.setAttribute("pos", i);
+                card.innerHTML = "***";
+
+                card.addEventListener("click", function () {
+                    let res = drMemGame.flip(i);
+
+                    if (res.flippedCards.length == 0) {
+                        document.getElementById("card_"+i).innerHTML = res.current;
+                    } else {
+                        document.getElementById("card_"+i).innerHTML = res.current;
+                        setTimeout(function() {
+                            let text = "***", style = "";
+                            if (res.match) {
+                                text = "";
+                                style = "green";
+                            }
+                            let el1 = document.getElementById("card_"+res.flippedCards[0].index);
+                            let el2 = document.getElementById("card_"+res.flippedCards[1].index);
+                            el1.innerHTML = text; el2.innerHTML = text;
+                            el1.style.backgroundColor = style;
+                            el2.style.backgroundColor = style;
+                        }, 1000);
+                    }
+
+                    console.log(res);
+                });
+
+                cardContainer.append(card);
+            }
+        </script>        
+</body>
+</html>

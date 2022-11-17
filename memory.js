@@ -1,6 +1,5 @@
 let drMemGame = function() {
     let debugFlag = false;
-    let serverOnly = true;
     let cards = ["Car", "Train", "Bike", "Scooter", "Plane", "Helicopter" ];
     let grid = [4, 3];
     let states;
@@ -85,6 +84,13 @@ let drMemGame = function() {
     }
 
     let flip = (pos) => {
+        let res = {
+            current: "",
+            match: false,
+            flippedCards: [],
+            playable: true
+        };
+
         if (!checkPlayable(pos)) return;
         
         if (states.plane[pos].flipped) {
@@ -95,13 +101,18 @@ let drMemGame = function() {
             states.flippedCardsInRound += 0b01;
             states.moves++;
             p(`${states.plane[pos].name} flipped to true`);
+            res.current = states.plane[pos].name;
             
         } else {
             p("Can't flip anymore.");
         }
         
         board();
-        if (serverOnly && states.flippedCardsInRound == 2) settle();
+        if (states.flippedCardsInRound == 2) {
+            settle(res);
+        }
+
+        return res;
     }
 
     let setIfGameOver = () => {
@@ -114,16 +125,18 @@ let drMemGame = function() {
         checkPlayable();
     }
 
-    let settle = () => {
-        if (!checkPlayable()) return;
-        let match = false;
+    let settle = (res) => {
+        res.playable = checkPlayable();
+        if (!res.playable) return;
+        
         if (states.flippedCardsInRound == 2) {
             let flippedCards = states.plane.reduce((res, cur) => {
                 return cur.valid && cur.flipped ? res.concat(cur) : res;
             }, []);
 
-            match = (flippedCards.length == 2 && flippedCards[0].name === flippedCards[1].name);
-            if (match) {
+            res.flippedCards = flippedCards;
+            res.match = (flippedCards.length == 2 && flippedCards[0].name === flippedCards[1].name);
+            if (res.match) {
                 states.plane[flippedCards[0].index].valid = false;
                 states.plane[flippedCards[1].index].valid = false;
                 p(`Cards [${flippedCards[0].name}, ${flippedCards[1].name}] match.`);
@@ -140,7 +153,7 @@ let drMemGame = function() {
             p("An error has occured.");
         }
         board();
-        return match;
+        return res;
     }
 
     let board = () => {
