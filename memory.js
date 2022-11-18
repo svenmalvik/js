@@ -104,7 +104,7 @@ let drMemGame = function() {
             states.flippedCardsInRound += 0b01;
             states.moves++;
             p(`${states.plane[pos].name} flipped to true`);
-            res.name = states.plane[pos].name;
+            res.name = states.plane[pos].name.toLowerCase();
             
         } else {
             p("Can't flip anymore.");
