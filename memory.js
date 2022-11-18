@@ -1,6 +1,6 @@
 let drMemGame = function() {
-    let debugFlag = false;
-    let cards = ["Car", "Train", "Bike", "Scooter", "Plane", "Helicopter" ];
+    let debugFlag = true;
+    let cards = ["Car", "Train", "House", "Gamingconsole", "Plane", "Helicopter" ];
     let grid = [4, 3];
     let states;
 
@@ -85,33 +85,37 @@ let drMemGame = function() {
 
     let flip = (pos) => {
         let res = {
-            current: "",
+            name: "",
             match: false,
             flippedCards: [],
-            playable: true
+            playable: true,
+            moves: 0,
+            nochange: false
         };
 
         if (!checkPlayable(pos)) return;
         
         if (states.plane[pos].flipped) {
             p(`${states.plane[pos]} is already flipped`);
+            res.nochange = true;
             
         } else if (states.flippedCardsInRound < 2) {
             states.plane[pos].flipped = true;
             states.flippedCardsInRound += 0b01;
             states.moves++;
             p(`${states.plane[pos].name} flipped to true`);
-            res.current = states.plane[pos].name;
+            res.name = states.plane[pos].name;
             
         } else {
             p("Can't flip anymore.");
+            res.nochange = true;
         }
         
         board();
         if (states.flippedCardsInRound == 2) {
             settle(res);
         }
-
+        res.moves = states.moves;
         return res;
     }
 

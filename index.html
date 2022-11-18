@@ -8,40 +8,41 @@
     <body>
         <h1>Memory</h1>
         <div id="cardContainer"></div>
+        <div id="moves">Moves: 0</div>
 
         <script type = "text/javascript">
             const cardContainer = document.getElementById("cardContainer");
             for (let i = 0; i < 12; i++) {
-                const card = document.createElement("div");
+                const card = document.createElement("img");
                 card.setAttribute("id", "card_" + i);
                 card.setAttribute("class", "card");
                 card.setAttribute("pos", i);
-                card.innerHTML = "***";
+                card.setAttribute("src", "images/none.gif");
+                card.setAttribute("alt", "***");
 
                 card.addEventListener("click", function () {
                     let res = drMemGame.flip(i);
+                    if (res && !res.nochange) {
+                        document.getElementById("moves").innerHTML = "Moves:" + res.moves;                        
+                        document.getElementById("card_"+i).setAttribute("src", `images/${res.name}.gif`);
 
-                    if (res.flippedCards.length == 0) {
-                        document.getElementById("card_"+i).innerHTML = res.current;
-                    } else {
-                        document.getElementById("card_"+i).innerHTML = res.current;
-                        setTimeout(function() {
-                            let text = "***", style = "";
-                            if (res.match) {
-                                text = "";
-                                style = "green";
-                            }
-                            let el1 = document.getElementById("card_"+res.flippedCards[0].index);
-                            let el2 = document.getElementById("card_"+res.flippedCards[1].index);
-                            el1.innerHTML = text; el2.innerHTML = text;
-                            el1.style.backgroundColor = style;
-                            el2.style.backgroundColor = style;
-                        }, 1000);
-                    }
+                        if (res.flippedCards.length != 0) {
+                            setTimeout(function() {
+                                if (!res.match) {
+                                    let alt = "";
+                                    let el1 = document.getElementById("card_" + res.flippedCards[0].index);
+                                    let el2 = document.getElementById("card_" + res.flippedCards[1].index);
+                                    el1.setAttribute("alt", alt); 
+                                    el2.setAttribute("alt", alt);
+                                    el1.setAttribute("src", `images/none.gif`);
+                                    el2.setAttribute("src", `images/none.gif`);
+                                }
 
+                            }, 1000);
+                        }                    
                     console.log(res);
+                }
                 });
-
                 cardContainer.append(card);
             }
         </script>        
